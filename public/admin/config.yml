@@ -2,8 +2,8 @@ backend:
   name: github
   repo: Athermy/game-portfolio
   branch: main
-  auth_type: pkce # <--- Enables direct browser authentication with GitHub
-  app_id: Ov23lic2l0gASl6kTtag
+  base_url: https://decap-cms-oauth-provider.vercel.app # Public authentication bridge
+  auth_endpoint: /api/auth
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
