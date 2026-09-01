@@ -1,0 +1,23 @@
+backend:
+  name: github
+  repo: Athermy/game-portfolio
+  branch: main
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "projects"
+    label: "Game Projects"
+    folder: "src/content/projects"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Project Title", name: "title", widget: "string" }
+      - { label: "Your Role", name: "role", widget: "string" }
+      - { label: "Engine & Tech", name: "engine", widget: "string" }
+      - { label: "Showcase GIF/Image", name: "gifUrl", widget: "image" }
+      - { label: "GitHub Code Link (Optional)", name: "githubUrl", widget: "string", required: false }
+      - { label: "Is Code Private?", name: "isPrivateRepo", widget: "boolean", default: false }
+      - { label: "Devlog & Details", name: "body", widget: "markdown" }

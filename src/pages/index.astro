@@ -1,11 +1,67 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Fetch all game projects
+const projects = await getCollection('projects');
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Dev Portfolio</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #121212;
+        color: #e0e0e0;
+      }
+      .project-card {
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        background: #1e1e1e;
+      }
+      .project-card img {
+        max-width: 100%;
+        border-radius: 4px;
+      }
+      a { color: #646cff; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Game Developer Portfolio</h1>
+      <p>Gameplay Programmer & Systems Designer</p>
+    </header>
+
+    <main>
+      <h2>Projects</h2>
+      {projects.length === 0 ? (
+        <p>No projects added yet. Visit <code>/admin</code> to add your first game!</p>
+      ) : (
+        projects.map((project) => (
+          <div class="project-card">
+            <h2>{project.data.title}</h2>
+            {project.data.gifUrl && <img src={project.data.gifUrl} alt={project.data.title} />}
+            <p><strong>Role:</strong> {project.data.role}</p>
+            <p><strong>Engine:</strong> {project.data.engine}</p>
+            
+            {/* Conditional Code Links */}
+            {project.data.githubUrl ? (
+              <p><a href={project.data.githubUrl} target="_blank">View Source Code on GitHub</a></p>
+            ) : project.data.isPrivateRepo ? (
+              <p><em>Source code private (available upon request)</em></p>
+            ) : null}
+
+            <div>{project.body}</div>
+          </div>
+        ))
+      )}
+    </main>
+  </body>
+</html>
