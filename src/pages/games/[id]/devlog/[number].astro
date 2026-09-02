@@ -1,0 +1,83 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allDevlogs = await getCollection('devlogs');
+  const games = await getCollection('games');
+
+  return games.flatMap((game) => {
+    const gameDevlogs = allDevlogs
+      .filter((d) => d.data.game === game.id)
+      .sort((a, b) => a.data.number - b.data.number); // chronological, for prev/next
+
+    return gameDevlogs.map((log, index) => ({
+      params: { id: game.id, number: String(log.data.number) },
+      props: {
+        game,
+        log,
+        prev: gameDevlogs[index - 1] ?? null,
+        next: gameDevlogs[index + 1] ?? null,
+      },
+    }));
+  });
+}
+
+const { game, log, prev, next } = Astro.props;
+const { Content } = await render(log);
+---
+
+<Layout title={`${log.data.title} | ${game.data.title} Devlog`}>
+  <article class="max-w-3xl mx-auto px-6 py-12 sm:py-16 w-full">
+    <a
+      href={`/game-portfolio/games/${game.id}/`}
+      class="inline-flex items-center gap-2 text-xs font-mono text-slate-500 hover:text-emerald-400 transition-colors mb-8"
+    >
+      &larr; BACK TO {game.data.title.toUpperCase()}
+    </a>
+
+    <header class="border-b border-white/[0.08] pb-8 mb-10">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="badge">#{log.data.number}</span>
+        <span class="text-[11px] font-mono text-slate-500">Published {log.data.date}</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">{log.data.title}</h1>
+      <p class="text-slate-300 text-base leading-relaxed font-light mb-5">{log.data.excerpt}</p>
+
+      {log.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5">
+          {log.data.tags.map((tag) => <span class="badge">{tag}</span>)}
+        </div>
+      )}
+    </header>
+
+    {log.data.coverImage && (
+      <img src={log.data.coverImage} alt={log.data.title} class="w-full rounded-xl border border-white/[0.08] mb-10" />
+    )}
+
+    <div class="prose prose-invert max-w-none
+      prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-white
+      prose-h2:text-2xl prose-h2:border-b prose-h2:border-white/[0.08] prose-h2:pb-3 prose-h2:mt-10
+      prose-h3:text-lg prose-h3:text-emerald-400 prose-h3:mt-8
+      prose-p:text-slate-300 prose-p:leading-relaxed
+      prose-li:text-slate-300 prose-ul:list-disc prose-ol:list-decimal
+      prose-img:rounded-lg prose-img:border prose-img:border-white/[0.08]
+      prose-code:text-emerald-300 prose-code:bg-white/[0.06] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
+      prose-hr:border-white/[0.08] prose-hr:my-10 mb-14">
+      <Content />
+    </div>
+
+    <nav class="flex justify-between gap-4 pt-8 border-t border-white/[0.06] text-xs font-mono">
+      {prev ? (
+        <a href={`/game-portfolio/games/${game.id}/devlog/${prev.data.number}/`} class="flex-1 px-4 py-3 rounded bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:border-white/30 hover:text-white transition">
+          &larr; #{prev.data.number} {prev.data.title}
+        </a>
+      ) : <span class="flex-1" />}
+      {next ? (
+        <a href={`/game-portfolio/games/${game.id}/devlog/${next.data.number}/`} class="flex-1 px-4 py-3 rounded bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:border-white/30 hover:text-white transition text-right">
+          #{next.data.number} {next.data.title} &rarr;
+        </a>
+      ) : <span class="flex-1" />}
+    </nav>
+  </article>
+</Layout>
