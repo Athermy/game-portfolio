@@ -1,0 +1,69 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { formatDateRange, durationLabel, sortKey } from '../../lib/format';
+
+const allGames = await getCollection('games');
+const games = allGames.sort((a, b) => sortKey(b.data.startDate) - sortKey(a.data.startDate));
+---
+
+<Layout title="Games | Athermy">
+  <div class="fixed inset-0 bg-grid-pattern pointer-events-none opacity-40 -z-10"></div>
+
+  <section class="py-12 sm:py-16 max-w-6xl mx-auto px-6 w-full flex-grow">
+    <header class="mb-12 border-b border-white/[0.08] pb-10">
+      <div class="flex items-center gap-3 text-xs font-mono text-emerald-400 mb-3 tracking-wider">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        ATHERMY // GAMES
+      </div>
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-4">Games</h1>
+      <p class="text-slate-400 text-base sm:text-lg max-w-2xl font-light leading-relaxed">
+        Every game I've shipped or prototyped, sorted newest first. Click one to read the full devlog.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {games.map((game) => {
+        const d = game.data;
+        const isWip = !d.endDate;
+        return (
+          <a href={`/game-portfolio/games/${game.id}/`} class="project-card rounded-xl overflow-hidden flex flex-col group">
+            <div class="h-44 w-full bg-slate-950 relative block overflow-hidden border-b border-white/[0.06]">
+              {d.videoUrl ? (
+                <video src={d.videoUrl} autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              ) : d.gifUrl ? (
+                <img src={d.gifUrl} alt={d.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              ) : (
+                <div class="w-full h-full flex items-center justify-center font-mono text-[11px] text-slate-600">[NO PREVIEW MEDIA]</div>
+              )}
+              {d.isPrivateRepo && (
+                <div class="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 flex items-center justify-center text-[10px]">🔒</div>
+              )}
+            </div>
+
+            <div class="p-5 flex flex-col flex-grow gap-3">
+              <div>
+                <h2 class="text-lg font-semibold text-white group-hover:text-emerald-400 transition-colors mb-1">{d.title}</h2>
+                <p class="text-[11px] font-mono text-slate-500">{formatDateRange(d.startDate, d.endDate)} · {durationLabel(d.startDate, d.endDate)}</p>
+              </div>
+
+              <p class="text-xs text-slate-400 font-light line-clamp-2 leading-relaxed">{d.shortDescription}</p>
+
+              <div class="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-white/[0.06]">
+                <span class="badge">{d.engine}</span>
+                {d.languages.map((l) => <span class="badge">{l}</span>)}
+                <span class="badge">{d.solo ? 'Solo' : 'Team'}</span>
+                {d.tags.map((t) => <span class="badge">{t}</span>)}
+                {isWip && <span class="badge badge-wip">WIP</span>}
+                {d.playUrl && <span class="badge badge-play">Playable</span>}
+                {d.downloadUrl && <span class="badge badge-download">Downloadable</span>}
+                {d.githubUrl && !d.isPrivateRepo && <span class="badge badge-repo">Public Repo</span>}
+                {d.isPrivateRepo && <span class="badge badge-private">Private</span>}
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+</Layout>

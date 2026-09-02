@@ -1,23 +1,45 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+const { title = "Athermy | Game Dev Archive" } = Astro.props;
+---
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <ClientRouter />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="min-h-screen bg-[#0a0c10] text-slate-200 selection:bg-emerald-500/20 selection:text-emerald-300">
+    <header class="w-full max-w-6xl mx-auto px-6 py-5 flex justify-between items-center border-b border-white/[0.06] backdrop-blur-md sticky top-0 z-50 bg-[#0a0c10]/80">
+      <a href="/game-portfolio/" class="font-mono text-xs font-semibold tracking-widest text-slate-100 hover:text-emerald-400 transition-colors flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        ATHERMY.DEV
+      </a>
+      <nav class="flex items-center space-x-6 text-xs font-mono text-slate-400">
+        <a href="/game-portfolio/" class="hover:text-white transition-colors">/home</a>
+        <a href="/game-portfolio/games/" class="hover:text-white transition-colors">/games</a>
+        <a href="/game-portfolio/projects/" class="hover:text-white transition-colors">/projects</a>
+        <a href="https://github.com/Athermy" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">/github</a>
+      </nav>
+    </header>
+
+    <!-- pb matches the fixed footer's height so content never sits underneath it -->
+    <main class="flex flex-col pb-20 sm:pb-16">
+      <slot />
+    </main>
+
+    <footer class="w-full text-center py-4 text-xs font-mono text-slate-600 border-t border-white/[0.06] fixed bottom-0 left-0 right-0 z-40 bg-[#0a0c10]/95 backdrop-blur-md">
+      <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-1 sm:gap-4">
+        <span>© Athermy — Game Systems & Architecture</span>
+        <span class="text-[11px] text-slate-700">Built with Astro & GitHub Pages</span>
+      </div>
+    </footer>
+  </body>
+</html>

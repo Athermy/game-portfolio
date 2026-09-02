@@ -1,67 +1,92 @@
 ---
+import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { sortKey } from '../lib/format';
 
-// Fetch all game projects
-const projects = await getCollection('projects');
+const games = (await getCollection('games')).sort((a, b) => sortKey(b.data.startDate) - sortKey(a.data.startDate));
+const featuredFlagged = games.filter((g) => g.data.featured);
+const highlighted = (featuredFlagged.length > 0 ? featuredFlagged : games).slice(0, 3);
+
+const socials = [
+  { label: 'GitHub', url: 'https://github.com/Athermy' },
+  { label: 'itch.io', url: 'https://athermy.itch.io' },
+  { label: 'Email', url: 'mailto:athermykc@gmail.com' },
+];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Game Dev Portfolio</title>
-    <style>
-      body {
-        font-family: system-ui, sans-serif;
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 2rem;
-        background: #121212;
-        color: #e0e0e0;
-      }
-      .project-card {
-        border: 1px solid #333;
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        background: #1e1e1e;
-      }
-      .project-card img {
-        max-width: 100%;
-        border-radius: 4px;
-      }
-      a { color: #646cff; }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>Game Developer Portfolio</h1>
-      <p>Gameplay Programmer & Systems Designer</p>
-    </header>
+<Layout title="Athermy | Game Systems & Architecture">
+  <div class="fixed inset-0 bg-grid-pattern pointer-events-none opacity-40 -z-10"></div>
 
-    <main>
-      <h2>Projects</h2>
-      {projects.length === 0 ? (
-        <p>No projects added yet. Visit <code>/admin</code> to add your first game!</p>
-      ) : (
-        projects.map((project) => (
-          <div class="project-card">
-            <h2>{project.data.title}</h2>
-            {project.data.gifUrl && <img src={project.data.gifUrl} alt={project.data.title} />}
-            <p><strong>Role:</strong> {project.data.role}</p>
-            <p><strong>Engine:</strong> {project.data.engine}</p>
-            
-            {/* Conditional Code Links */}
-            {project.data.githubUrl ? (
-              <p><a href={project.data.githubUrl} target="_blank">View Source Code on GitHub</a></p>
-            ) : project.data.isPrivateRepo ? (
-              <p><em>Source code private (available upon request)</em></p>
-            ) : null}
+  <!-- Hero -->
+  <section class="max-w-6xl mx-auto px-6 pt-20 sm:pt-28 pb-16 w-full text-center flex flex-col items-center">
+    <div class="flex items-center gap-3 text-xs font-mono text-emerald-400 mb-4 tracking-wider">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      ATHERMY
+    </div>
+    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-3">
+      Hi, I'm Athermy
+    </h1>
+    <p class="text-slate-400 text-base sm:text-lg font-light tracking-wide mb-10">
+      I'm a Game Developer!
+    </p>
 
-            <div>{project.body}</div>
-          </div>
-        ))
-      )}
-    </main>
-  </body>
-</html>
+    <div class="flex flex-wrap items-center justify-center gap-3">
+      <a href="/game-portfolio/games/" class="px-5 py-2.5 rounded-full border border-white/20 text-white text-xs font-mono tracking-wide hover:bg-white hover:text-black transition">
+        GAMES
+      </a>
+      <a href="/game-portfolio/projects/" class="px-5 py-2.5 rounded-full border border-white/20 text-white text-xs font-mono tracking-wide hover:bg-white hover:text-black transition">
+        PROJECTS
+      </a>
+    </div>
+  </section>
+
+  <!-- Highlighted games (max 3) -->
+  {highlighted.length > 0 && (
+    <section class="max-w-6xl mx-auto px-6 pb-20 w-full">
+      <h2 class="text-xs font-mono text-slate-500 uppercase tracking-widest mb-6 text-center">Highlighted Games</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {highlighted.map((game) => (
+          <a href={`/game-portfolio/games/${game.id}/`} class="project-card rounded-xl overflow-hidden flex flex-col group">
+            <div class="h-44 w-full bg-slate-950 relative overflow-hidden border-b border-white/[0.06]">
+              {game.data.videoUrl ? (
+                <video src={game.data.videoUrl} autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              ) : game.data.gifUrl ? (
+                <img src={game.data.gifUrl} alt={game.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              ) : (
+                <div class="w-full h-full flex items-center justify-center font-mono text-[11px] text-slate-600">[NO PREVIEW MEDIA]</div>
+              )}
+            </div>
+            <div class="p-5">
+              <span class="text-[10px] font-mono text-emerald-400">{game.data.engine}</span>
+              <h3 class="text-lg font-semibold text-white group-hover:text-emerald-400 transition-colors mt-1 mb-2">
+                {game.data.title}
+              </h3>
+              <p class="text-xs text-slate-400 font-light line-clamp-2 leading-relaxed">{game.data.shortDescription}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- About me (bottom of page) -->
+  <section class="border-t border-white/[0.06] bg-white/[0.02]">
+    <div class="max-w-3xl mx-auto px-6 py-16 text-center">
+      <h2 class="text-xs font-mono text-slate-500 uppercase tracking-widest mb-6">About Me</h2>
+      <p class="text-slate-300 text-base sm:text-lg font-light leading-relaxed">
+        Hi! I'm Athermy, a solo developer based in France. I like picking apart how games
+        are put together as much as making them : engines, tooling, and the small systems
+        underneath a project are usually where I end up spending my time. I'm always looking
+        for an excuse to learn something new, whether that's a new engine, or a language I haven't touched yet.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4 text-xs font-mono text-slate-500 mt-8">
+        {socials.map((s) => (
+          <a href={s.url} target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 transition-colors">
+            /{s.label.toLowerCase()}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
