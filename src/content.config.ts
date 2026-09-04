@@ -53,11 +53,13 @@ const projectsCollection = defineCollection({
   }),
 });
 
-// Devlogs: one entry per numbered update, linked back to a game by its `game` id.
+// Devlogs: one entry per numbered update, linked back to either a game or a
+// project by id. Exactly one of `game` / `project` should be set per entry.
 const devlogsCollection = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/devlogs' }),
   schema: z.object({
-    game: z.string(), // id of the game this devlog belongs to (matches the games/*.md filename)
+    game: z.string().optional(), // id of the game this devlog belongs to
+    project: z.string().optional(), // id of the project this devlog belongs to
     number: z.number().int(), // display order, e.g. #1, #2...
     title: z.string(),
     date: z.string(), // "YYYY-MM-DD"

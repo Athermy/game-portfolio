@@ -2,20 +2,28 @@
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 import { formatDateRange, durationLabel } from '../../lib/format';
+import { FALLBACK_IMAGE } from '../../lib/media';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
-  return projects.map((project) => ({
-    params: { id: project.id },
-    props: { project },
-  }));
+  const allDevlogs = await getCollection('devlogs');
+
+  return projects.map((project) => {
+    const devlogs = allDevlogs
+      .filter((d) => d.data.project === project.id)
+      .sort((a, b) => b.data.number - a.data.number); // newest first
+    return {
+      params: { id: project.id },
+      props: { project, devlogs },
+    };
+  });
 }
 
-const { project } = Astro.props;
+const { project, devlogs } = Astro.props;
 const { Content } = await render(project);
 const d = project.data;
 const isWip = !d.endDate;
-const gallery = d.gallery || [];
+const gallery = d.gallery && d.gallery.length > 0 ? d.gallery : [FALLBACK_IMAGE];
 ---
 
 <Layout title={`${d.title} | Athermy Projects`}>
@@ -31,11 +39,11 @@ const gallery = d.gallery || [];
         {isWip && <span class="badge badge-wip">Work in Progress</span>}
       </div>
 
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-3">{d.title}</h1>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-100 tracking-tight mb-3">{d.title}</h1>
       <p class="text-[11px] font-mono text-slate-500 mb-4">
         {formatDateRange(d.startDate, d.endDate)} · {durationLabel(d.startDate, d.endDate)}
       </p>
-      <p class="text-slate-300 text-base sm:text-lg leading-relaxed font-light">{d.shortDescription}</p>
+      <p class="text-slate-200 text-base sm:text-lg leading-relaxed font-light">{d.shortDescription}</p>
 
       <div class="hero-callout p-4 mt-6 text-sm text-slate-200 flex items-start gap-2">
         <span class="mt-0.5">ℹ️</span>
@@ -75,7 +83,7 @@ const gallery = d.gallery || [];
         <h3 class="text-xs font-mono text-slate-500 uppercase tracking-widest mb-3">Gallery</h3>
         <div class="rounded-xl overflow-hidden border border-white/[0.08] bg-slate-950">
           <div class="h-80 sm:h-[450px] w-full relative">
-            <img id="active-gallery-img" src={gallery[0]} alt={d.title} class="w-full h-full object-contain" />
+            <img id="active-gallery-img" src={gallery[0]} alt={d.title} class="w-full h-full object-contain" onerror={`this.onerror=null; this.src='${FALLBACK_IMAGE}';`} />
           </div>
           {gallery.length > 1 && (
             <div class="flex items-center gap-2 p-3 bg-slate-900/60 border-t border-white/[0.06] overflow-x-auto">
@@ -86,7 +94,7 @@ const gallery = d.gallery || [];
                     index === 0 ? 'border-emerald-400 opacity-100' : 'border-white/10 opacity-50 hover:opacity-80'
                   }`}
                 >
-                  <img src={imgUrl} alt={`Thumbnail ${index + 1}`} class="w-full h-full object-cover" />
+                  <img src={imgUrl} alt={`Thumbnail ${index + 1}`} class="w-full h-full object-cover" onerror={`this.onerror=null; this.src='${FALLBACK_IMAGE}';`} />
                 </button>
               ))}
             </div>
@@ -95,16 +103,52 @@ const gallery = d.gallery || [];
       </section>
     )}
 
-    <div class="prose prose-invert max-w-none
-      prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-white
+    <div class="prose prose-invert max-w-2xl mx-auto
+      prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-100
       prose-h2:text-2xl prose-h2:border-b prose-h2:border-white/[0.08] prose-h2:pb-3 prose-h2:mt-10
-      prose-h3:text-lg prose-h3:text-emerald-400 prose-h3:mt-8
-      prose-p:text-slate-300 prose-p:leading-relaxed
+      prose-h3:text-xl prose-h3:font-bold prose-h3:text-emerald-400 prose-h3:mt-10 prose-h3:mb-3
+      prose-p:text-slate-200 prose-p:leading-relaxed
       prose-li:text-slate-300 prose-ul:list-disc prose-ol:list-decimal
       prose-code:text-emerald-300 prose-code:bg-white/[0.06] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
-      prose-hr:border-white/[0.08] prose-hr:my-10">
+      prose-hr:border-white/[0.08] prose-hr:my-10 mb-14">
       <Content />
     </div>
+
+    <!-- Devlog -->
+    {devlogs.length > 0 && (
+      <section>
+        <h2 class="text-xl font-bold text-slate-100 tracking-tight mb-6 pb-3 border-b border-white/[0.08]">
+          Development Blog
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {devlogs.map((log) => (
+            <a
+              href={`/game-portfolio/projects/${project.id}/devlog/${log.data.number}/`}
+              class="project-card rounded-xl overflow-hidden flex flex-col group"
+            >
+              {log.data.coverImage && (
+                <div class="h-32 w-full bg-slate-950 overflow-hidden border-b border-white/[0.06]">
+                  <img src={log.data.coverImage} alt={log.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                </div>
+              )}
+              <div class="p-4 flex flex-col gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="badge">#{log.data.number}</span>
+                  <h3 class="text-sm font-semibold text-slate-100 group-hover:text-emerald-400 transition-colors">{log.data.title}</h3>
+                </div>
+                <p class="text-xs text-slate-400 font-light line-clamp-2 leading-relaxed">{log.data.excerpt}</p>
+                {log.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1.5">
+                    {log.data.tags.map((tag) => <span class="badge">{tag}</span>)}
+                  </div>
+                )}
+                <p class="text-[10px] font-mono text-slate-600 mt-1">Published {log.data.date}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
   </article>
 </Layout>
 

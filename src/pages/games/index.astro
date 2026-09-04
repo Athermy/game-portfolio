@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 import { formatDateRange, durationLabel, sortKey } from '../../lib/format';
+import { FALLBACK_IMAGE } from '../../lib/media';
 
 const allGames = await getCollection('games');
 const games = allGames.sort((a, b) => sortKey(b.data.startDate) - sortKey(a.data.startDate));
@@ -16,8 +17,8 @@ const games = allGames.sort((a, b) => sortKey(b.data.startDate) - sortKey(a.data
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         ATHERMY // GAMES
       </div>
-      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-4">Games</h1>
-      <p class="text-slate-400 text-base sm:text-lg max-w-2xl font-light leading-relaxed">
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-100 mb-4">Games</h1>
+      <p class="text-slate-300 text-base sm:text-lg max-w-2xl font-light leading-relaxed">
         Every game I've shipped or prototyped, sorted newest first. Click one to read the full devlog.
       </p>
     </header>
@@ -30,11 +31,13 @@ const games = allGames.sort((a, b) => sortKey(b.data.startDate) - sortKey(a.data
           <a href={`/game-portfolio/games/${game.id}/`} class="project-card rounded-xl overflow-hidden flex flex-col group">
             <div class="h-44 w-full bg-slate-950 relative block overflow-hidden border-b border-white/[0.06]">
               {d.videoUrl ? (
-                <video src={d.videoUrl} autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <video src={d.videoUrl} autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" /><img src={FALLBACK_IMAGE} alt="Work in progress" class="hidden w-full h-full object-cover opacity-70" />
               ) : d.gifUrl ? (
-                <img src={d.gifUrl} alt={d.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <img src={d.gifUrl} alt={d.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror={`this.onerror=null; this.src='${FALLBACK_IMAGE}';`} />
+              ) : d.gallery && d.gallery.length > 0 ? (
+                <img src={d.gallery[0]} alt={d.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror={`this.onerror=null; this.src='${FALLBACK_IMAGE}';`} />
               ) : (
-                <div class="w-full h-full flex items-center justify-center font-mono text-[11px] text-slate-600">[NO PREVIEW MEDIA]</div>
+                <img src={FALLBACK_IMAGE} alt="Work in progress" class="w-full h-full object-cover opacity-70" />
               )}
               {d.isPrivateRepo && (
                 <div class="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 flex items-center justify-center text-[10px]">🔒</div>
@@ -43,7 +46,7 @@ const games = allGames.sort((a, b) => sortKey(b.data.startDate) - sortKey(a.data
 
             <div class="p-5 flex flex-col flex-grow gap-3">
               <div>
-                <h2 class="text-lg font-semibold text-white group-hover:text-emerald-400 transition-colors mb-1">{d.title}</h2>
+                <h2 class="text-lg font-semibold text-slate-100 group-hover:text-emerald-400 transition-colors mb-1">{d.title}</h2>
                 <p class="text-[11px] font-mono text-slate-500">{formatDateRange(d.startDate, d.endDate)} · {durationLabel(d.startDate, d.endDate)}</p>
               </div>
 

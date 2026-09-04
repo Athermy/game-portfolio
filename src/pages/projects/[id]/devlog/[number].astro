@@ -1,39 +1,39 @@
 ---
 import Layout from '../../../../layouts/Layout.astro';
-import { getCollection, getEntry, render } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const allDevlogs = await getCollection('devlogs');
-  const games = await getCollection('games');
+  const projects = await getCollection('projects');
 
-  return games.flatMap((game) => {
-    const gameDevlogs = allDevlogs
-      .filter((d) => d.data.game === game.id)
+  return projects.flatMap((project) => {
+    const projectDevlogs = allDevlogs
+      .filter((d) => d.data.project === project.id)
       .sort((a, b) => a.data.number - b.data.number); // chronological, for prev/next
 
-    return gameDevlogs.map((log, index) => ({
-      params: { id: game.id, number: String(log.data.number) },
+    return projectDevlogs.map((log, index) => ({
+      params: { id: project.id, number: String(log.data.number) },
       props: {
-        game,
+        project,
         log,
-        prev: gameDevlogs[index - 1] ?? null,
-        next: gameDevlogs[index + 1] ?? null,
+        prev: projectDevlogs[index - 1] ?? null,
+        next: projectDevlogs[index + 1] ?? null,
       },
     }));
   });
 }
 
-const { game, log, prev, next } = Astro.props;
+const { project, log, prev, next } = Astro.props;
 const { Content } = await render(log);
 ---
 
-<Layout title={`${log.data.title} | ${game.data.title} Devlog`}>
+<Layout title={`${log.data.title} | ${project.data.title} Devlog`}>
   <article class="max-w-3xl mx-auto px-6 py-12 sm:py-16 w-full">
     <a
-      href={`/game-portfolio/games/${game.id}/`}
+      href={`/game-portfolio/projects/${project.id}/`}
       class="inline-flex items-center gap-2 text-xs font-mono text-slate-500 hover:text-emerald-400 transition-colors mb-8"
     >
-      &larr; BACK TO {game.data.title.toUpperCase()}
+      &larr; BACK TO {project.data.title.toUpperCase()}
     </a>
 
     <header class="border-b border-white/[0.08] pb-8 mb-10">
@@ -69,12 +69,12 @@ const { Content } = await render(log);
 
     <nav class="flex justify-between gap-4 pt-8 border-t border-white/[0.06] text-xs font-mono">
       {prev ? (
-        <a href={`/game-portfolio/games/${game.id}/devlog/${prev.data.number}/`} class="flex-1 px-4 py-3 rounded bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:border-white/30 hover:text-slate-100 transition">
+        <a href={`/game-portfolio/projects/${project.id}/devlog/${prev.data.number}/`} class="flex-1 px-4 py-3 rounded bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:border-white/30 hover:text-slate-100 transition">
           &larr; #{prev.data.number} {prev.data.title}
         </a>
       ) : <span class="flex-1" />}
       {next ? (
-        <a href={`/game-portfolio/games/${game.id}/devlog/${next.data.number}/`} class="flex-1 px-4 py-3 rounded bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:border-white/30 hover:text-slate-100 transition text-right">
+        <a href={`/game-portfolio/projects/${project.id}/devlog/${next.data.number}/`} class="flex-1 px-4 py-3 rounded bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:border-white/30 hover:text-slate-100 transition text-right">
           #{next.data.number} {next.data.title} &rarr;
         </a>
       ) : <span class="flex-1" />}

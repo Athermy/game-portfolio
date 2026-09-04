@@ -16,17 +16,17 @@ const { title = "Athermy | Game Dev Archive" } = Astro.props;
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
 
-  <body class="min-h-screen bg-[#0a0c10] text-slate-200 selection:bg-emerald-500/20 selection:text-emerald-300">
-    <header class="w-full max-w-6xl mx-auto px-6 py-5 flex justify-between items-center border-b border-white/[0.06] backdrop-blur-md sticky top-0 z-50 bg-[#0a0c10]/80">
+  <body class="min-h-screen bg-[#0f1319] text-slate-200 selection:bg-emerald-500/20 selection:text-emerald-300">
+    <header class="w-full max-w-6xl mx-auto px-6 py-5 flex justify-between items-center border-b border-white/[0.06] backdrop-blur-md sticky top-0 z-50 bg-[#0f1319]/80">
       <a href="/game-portfolio/" class="font-mono text-xs font-semibold tracking-widest text-slate-100 hover:text-emerald-400 transition-colors flex items-center gap-2">
         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
         ATHERMY.DEV
       </a>
       <nav class="flex items-center space-x-6 text-sm font-mono text-slate-400">
-        <a href="/game-portfolio/" class="hover:text-white transition-colors">Home</a>
-        <a href="/game-portfolio/games/" class="hover:text-white transition-colors">Games</a>
-        <a href="/game-portfolio/projects/" class="hover:text-white transition-colors">Projects</a>
-        <a href="https://github.com/Athermy" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+        <a href="/game-portfolio/" class="hover:text-slate-100 transition-colors">Home</a>
+        <a href="/game-portfolio/games/" class="hover:text-slate-100 transition-colors">Games</a>
+        <a href="/game-portfolio/projects/" class="hover:text-slate-100 transition-colors">Projects</a>
+        <a href="https://github.com/Athermy" target="_blank" rel="noopener noreferrer" class="hover:text-slate-100 transition-colors">GitHub</a>
       </nav>
     </header>
 
@@ -35,7 +35,7 @@ const { title = "Athermy | Game Dev Archive" } = Astro.props;
       <slot />
     </main>
 
-    <footer class="w-full text-center py-4 text-xs font-mono text-slate-600 border-t border-white/[0.06] fixed bottom-0 left-0 right-0 z-40 bg-[#0a0c10]/95 backdrop-blur-md">
+    <footer class="w-full text-center py-4 text-xs font-mono text-slate-600 border-t border-white/[0.06] fixed bottom-0 left-0 right-0 z-40 bg-[#0f1319]/95 backdrop-blur-md">
       <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-1 sm:gap-4">
         <span>© Athermy — Game Systems & Architecture</span>
         <span class="text-[11px] text-slate-700">Built with Astro & GitHub Pages</span>
