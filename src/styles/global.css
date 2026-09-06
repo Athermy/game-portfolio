@@ -1,17 +1,73 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* ============================================================
+   Theme tokens — dark is the default (site's native identity),
+   [data-theme="light"] on <html> overrides them.
+   Toggle logic + persistence lives in Layout.astro.
+   ============================================================ */
+:root {
+  --bg: #0f1319;
+  --bg-elevated: #161b24;   /* cards */
+  --bg-media: #020617;      /* image/video letterbox background */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.18);
+
+  --text-heading: #f1f5f9;
+  --text-body: #e2e8f0;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+  --text-faintest: #475569;
+
+  --accent: #34d399;
+  --accent-strong: #6ee7b7;
+  --accent-soft-bg: rgba(52, 211, 153, 0.08);
+  --accent-soft-border: rgba(52, 211, 153, 0.25);
+
+  --surface-1: rgba(255, 255, 255, 0.02);
+  --surface-2: rgba(255, 255, 255, 0.04);
+  --surface-3: rgba(255, 255, 255, 0.06);
+
+  --grid-dot: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --bg-elevated: #ffffff;
+  --bg-media: #e2e8f0;
+  --border: rgba(15, 23, 42, 0.1);
+  --border-strong: rgba(15, 23, 42, 0.22);
+
+  --text-heading: #0f172a;
+  --text-body: #1e293b;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --text-faintest: #94a3b8;
+
+  --accent: #059669;
+  --accent-strong: #047857;
+  --accent-soft-bg: rgba(5, 150, 105, 0.08);
+  --accent-soft-border: rgba(5, 150, 105, 0.25);
+
+  --surface-1: rgba(15, 23, 42, 0.03);
+  --surface-2: rgba(15, 23, 42, 0.05);
+  --surface-3: rgba(15, 23, 42, 0.07);
+
+  --grid-dot: rgba(15, 23, 42, 0.08);
+}
+
 @layer base {
   body {
-    /* A richer graphite tone instead of near-black, with a soft radial
-       falloff so the page has some depth instead of a flat dark panel. */
-    background-color: #0f1319;
-    background-image: radial-gradient(ellipse 1200px 800px at 50% -10%, rgba(52, 211, 153, 0.06), transparent 60%);
+    background-color: var(--bg);
+    background-image: radial-gradient(ellipse 1200px 800px at 50% -10%, var(--accent-soft-bg), transparent 60%);
     background-attachment: fixed;
-    color: #e2e8f0;
+    color: var(--text-body);
     font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     line-height: 1.6;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   code, kbd, samp, pre, .font-mono {
@@ -20,20 +76,20 @@
 }
 
 .project-card {
-  background: #161b24;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
   will-change: transform;
 }
 
 .project-card:hover {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: var(--border-strong);
   transform: translateY(-3px);
 }
 
 .bg-grid-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -46,14 +102,14 @@
   font-family: 'Geist Mono', monospace;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  color: #cbd5e1;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--text-heading) 4%, transparent);
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
-.badge-repo { color: #34d399; border-color: rgba(52, 211, 153, 0.25); background: rgba(52, 211, 153, 0.08); }
-.badge-private { color: #94a3b8; }
+.badge-repo { color: var(--accent); border-color: var(--accent-soft-border); background: var(--accent-soft-bg); }
+.badge-private { color: var(--text-muted); }
 .badge-play { color: #60a5fa; border-color: rgba(96, 165, 250, 0.25); background: rgba(96, 165, 250, 0.08); }
 .badge-download { color: #fbbf24; border-color: rgba(251, 191, 36, 0.25); background: rgba(251, 191, 36, 0.08); }
 .badge-wip { color: #f472b6; border-color: rgba(244, 114, 182, 0.25); background: rgba(244, 114, 182, 0.08); }
@@ -63,3 +119,23 @@
   border: 1px solid rgba(96, 165, 250, 0.2);
   border-radius: 10px;
 }
+
+/* Small square icon buttons (theme toggle, mobile hamburger) */
+.theme-toggle, .icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.theme-toggle:hover, .icon-btn:hover { border-color: var(--border-strong); color: var(--text-heading); }
+.theme-toggle .icon-moon { display: block; }
+.theme-toggle .icon-sun { display: none; }
+[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+[data-theme="light"] .theme-toggle .icon-sun { display: block; }

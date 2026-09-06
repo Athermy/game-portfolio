@@ -29,7 +29,7 @@ const icons = {
 const socials = [
   { label: 'GitHub', url: 'https://github.com/Athermy', icon: icons.github },
   { label: 'itch.io', url: 'https://athermy.itch.io', icon: icons.itch },
-  { label: 'Email', url: 'mailto:athermykc@gmail.com', icon: icons.email },
+  { label: 'Email', url: 'mailto:hello@athermy.dev', icon: icons.email },
 ];
 ---
 
@@ -42,32 +42,32 @@ const socials = [
       <div class="absolute inset-0 bg-grid-pattern opacity-40"></div>
     )}
     <!-- Dark gradient overlay so text stays readable over any background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-[#0f1319]"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-[var(--bg)]/70 via-[var(--bg)]/50 to-[var(--bg)]"></div>
 
-    <div class="relative z-10 px-6">
-      <div class="flex items-center justify-center gap-3 text-xs font-mono text-emerald-400 mb-4 tracking-wider">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+    <div class="relative z-10 px-4 sm:px-6">
+      <div class="flex items-center justify-center gap-3 text-xs font-mono text-[var(--accent)] mb-4 tracking-wider">
+        <span class="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse"></span>
         ATHERMY
       </div>
-      <h1 class="text-5xl sm:text-7xl font-extrabold tracking-tight text-slate-100 mb-3">
+      <h1 class="text-5xl sm:text-7xl font-extrabold tracking-tight text-[var(--text-heading)] mb-3">
         Hi, I'm Athermy
       </h1>
-      <p class="text-slate-300 text-lg sm:text-xl font-light tracking-wide mb-12">
+      <p class="text-[var(--text-secondary)] text-lg sm:text-xl font-light tracking-wide mb-12">
         I'm a Game Developer!
       </p>
 
       <div class="flex flex-wrap items-center justify-center gap-3">
-        <a href="/game-portfolio/games/" class="px-5 py-2.5 rounded-full border border-white/25 text-slate-100 text-xs font-mono tracking-wide hover:bg-white hover:text-black transition">
+        <a href="/game-portfolio/games/" class="px-5 py-2.5 rounded-full border border-[var(--border-strong)] text-[var(--text-heading)] text-xs font-mono tracking-wide hover:bg-white hover:text-black transition">
           GAMES
         </a>
-        <a href="/game-portfolio/projects/" class="px-5 py-2.5 rounded-full border border-white/25 text-slate-100 text-xs font-mono tracking-wide hover:bg-white hover:text-black transition">
+        <a href="/game-portfolio/projects/" class="px-5 py-2.5 rounded-full border border-[var(--border-strong)] text-[var(--text-heading)] text-xs font-mono tracking-wide hover:bg-white hover:text-black transition">
           PROJECTS
         </a>
       </div>
     </div>
 
     <!-- Scroll-down hint -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-slate-500 animate-bounce">
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-[var(--text-faint)] animate-bounce">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 5v14M5 12l7 7 7-7" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
@@ -78,12 +78,12 @@ const socials = [
 
   <!-- Highlighted games (max 3) -->
   {highlighted.length > 0 && (
-    <section class="max-w-6xl mx-auto px-6 py-20 w-full">
-      <h2 class="text-xs font-mono text-slate-500 uppercase tracking-widest mb-6 text-center">Highlighted Games</h2>
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-20 w-full">
+      <h2 class="text-xs font-mono text-[var(--text-faint)] uppercase tracking-widest mb-6 text-center">Highlighted Games</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {highlighted.map((game) => (
           <a href={`/game-portfolio/games/${game.id}/`} class="project-card rounded-xl overflow-hidden flex flex-col group">
-            <div class="h-44 w-full bg-slate-950 relative overflow-hidden border-b border-white/[0.06]">
+            <div class="h-44 w-full bg-[var(--bg-media)] relative overflow-hidden border-b border-[var(--border)]">
               {game.data.videoUrl ? (
                 <video src={game.data.videoUrl} autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" /><img src={FALLBACK_IMAGE} alt="Work in progress" class="hidden w-full h-full object-cover opacity-70" />
               ) : game.data.gifUrl ? (
@@ -95,11 +95,11 @@ const socials = [
               )}
             </div>
             <div class="p-5">
-              <span class="text-[10px] font-mono text-emerald-400">{game.data.engine}</span>
-              <h3 class="text-lg font-semibold text-slate-100 group-hover:text-emerald-400 transition-colors mt-1 mb-2">
+              <span class="text-[10px] font-mono text-[var(--accent)]">{game.data.engine}</span>
+              <h3 class="text-lg font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent)] transition-colors mt-1 mb-2">
                 {game.data.title}
               </h3>
-              <p class="text-xs text-slate-400 font-light line-clamp-2 leading-relaxed">{game.data.shortDescription}</p>
+              <p class="text-xs text-[var(--text-muted)] font-light line-clamp-2 leading-relaxed">{game.data.shortDescription}</p>
             </div>
           </a>
         ))}
@@ -108,19 +108,19 @@ const socials = [
   )}
 
   <!-- About me (bottom of page) -->
-  <section class="border-t border-white/[0.06] bg-white/[0.02]">
-    <div class="max-w-3xl mx-auto px-6 py-16 text-center">
-      <h2 class="text-xs font-mono text-slate-500 uppercase tracking-widest mb-6">About Me</h2>
-      <p class="text-slate-200 text-base sm:text-lg font-light leading-relaxed">
+  <section class="border-t border-[var(--border)] bg-[var(--surface-1)]">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-16 text-center">
+      <h2 class="text-xs font-mono text-[var(--text-faint)] uppercase tracking-widest mb-6">About Me</h2>
+      <p class="text-[var(--text-body)] text-base sm:text-lg font-light leading-relaxed">
         Hi! I'm Athermy, a solo developer based in France. I like picking apart how games
         are put together as much as making them — engines, tooling, and the small systems
         underneath a project are usually where I end up spending my time. I'm always looking
         for an excuse to learn something new, whether that's a new engine, (something else).
       </p>
 
-      <div class="flex flex-wrap justify-center gap-6 text-xs font-mono text-slate-500 mt-8">
+      <div class="flex flex-wrap justify-center gap-6 text-xs font-mono text-[var(--text-faint)] mt-8">
         {socials.map((s) => (
-          <a href={s.url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-emerald-400 transition-colors">
+          <a href={s.url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-[var(--accent)] transition-colors">
             <span set:html={s.icon} />
             {s.label}
           </a>

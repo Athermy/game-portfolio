@@ -11,14 +11,14 @@ const projects = allProjects.sort((a, b) => sortKey(b.data.startDate) - sortKey(
 <Layout title="Projects | Athermy">
   <div class="fixed inset-0 bg-grid-pattern pointer-events-none opacity-40 -z-10"></div>
 
-  <section class="py-12 sm:py-16 max-w-6xl mx-auto px-6 w-full flex-grow">
-    <header class="mb-12 border-b border-white/[0.08] pb-10">
-      <div class="flex items-center gap-3 text-xs font-mono text-emerald-400 mb-3 tracking-wider">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+  <section class="py-12 sm:py-16 max-w-6xl mx-auto px-4 sm:px-6 w-full flex-grow">
+    <header class="mb-12 border-b border-[var(--border)] pb-10">
+      <div class="flex items-center gap-3 text-xs font-mono text-[var(--accent)] mb-3 tracking-wider">
+        <span class="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse"></span>
         ATHERMY // PROJECTS
       </div>
-      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-100 mb-4">Projects</h1>
-      <p class="text-slate-300 text-base sm:text-lg max-w-2xl font-light leading-relaxed">
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-[var(--text-heading)] mb-4">Projects</h1>
+      <p class="text-[var(--text-secondary)] text-base sm:text-lg max-w-2xl font-light leading-relaxed">
         Tools, apps, and non-game work — infrastructure, web apps, internal utilities.
       </p>
     </header>
@@ -29,7 +29,7 @@ const projects = allProjects.sort((a, b) => sortKey(b.data.startDate) - sortKey(
         const isWip = !d.endDate;
         return (
           <a href={`/game-portfolio/projects/${project.id}/`} class="project-card rounded-xl overflow-hidden flex flex-col group">
-            <div class="h-44 w-full bg-slate-950 relative block overflow-hidden border-b border-white/[0.06]">
+            <div class="h-44 w-full bg-[var(--bg-media)] relative block overflow-hidden border-b border-[var(--border)]">
               {d.videoUrl ? (
                 <video src={d.videoUrl} autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" /><img src={FALLBACK_IMAGE} alt="Work in progress" class="hidden w-full h-full object-cover opacity-70" />
               ) : d.gifUrl ? (
@@ -43,13 +43,13 @@ const projects = allProjects.sort((a, b) => sortKey(b.data.startDate) - sortKey(
 
             <div class="p-5 flex flex-col flex-grow gap-3">
               <div>
-                <h2 class="text-lg font-semibold text-slate-100 group-hover:text-emerald-400 transition-colors mb-1">{d.title}</h2>
-                <p class="text-[11px] font-mono text-slate-500">{formatDateRange(d.startDate, d.endDate)} · {durationLabel(d.startDate, d.endDate)}</p>
+                <h2 class="text-lg font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent)] transition-colors mb-1">{d.title}</h2>
+                <p class="text-[11px] font-mono text-[var(--text-faint)]">{formatDateRange(d.startDate, d.endDate)} · {durationLabel(d.startDate, d.endDate)}</p>
               </div>
 
-              <p class="text-xs text-slate-400 font-light line-clamp-2 leading-relaxed">{d.shortDescription}</p>
+              <p class="text-xs text-[var(--text-muted)] font-light line-clamp-2 leading-relaxed">{d.shortDescription}</p>
 
-              <div class="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-white/[0.06]">
+              <div class="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-[var(--border)]">
                 {d.stack.map((s) => <span class="badge">{s}</span>)}
                 <span class="badge">{d.solo ? 'Solo' : 'Team'}</span>
                 {d.tags.map((t) => <span class="badge">{t}</span>)}

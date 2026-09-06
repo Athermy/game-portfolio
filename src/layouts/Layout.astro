@@ -14,32 +14,129 @@ const { title = "Athermy | Game Dev Archive" } = Astro.props;
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!--
+      Anti-flash-of-wrong-theme script: runs synchronously before first paint
+      so the page never flickers from dark to light (or vice versa) on load.
+      Astro's ClientRouter preserves this across page transitions since the
+      <html> element itself isn't replaced, but we re-apply on astro:after-swap
+      as a safety net (see the script at the bottom of the body).
+    -->
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem('theme');
+        var theme = stored || 'dark'; // dark is this site's native default
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
   </head>
 
-  <body class="min-h-screen bg-[#0f1319] text-slate-200 selection:bg-emerald-500/20 selection:text-emerald-300">
-    <header class="w-full max-w-6xl mx-auto px-6 py-5 flex justify-between items-center border-b border-white/[0.06] backdrop-blur-md sticky top-0 z-50 bg-[#0f1319]/80">
-      <a href="/game-portfolio/" class="font-mono text-xs font-semibold tracking-widest text-slate-100 hover:text-emerald-400 transition-colors flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+  <body class="min-h-screen bg-[var(--bg)] text-[var(--text-body)] selection:bg-emerald-500/20 selection:text-emerald-300">
+    <header class="w-full max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-5 flex justify-between items-center border-b border-[var(--border)] backdrop-blur-md sticky top-0 z-50 bg-[var(--bg)]/80">
+      <a href="/game-portfolio/" class="font-mono text-xs font-semibold tracking-widest text-[var(--text-heading)] hover:text-[var(--accent)] transition-colors flex items-center gap-2 shrink-0">
+        <span class="w-2 h-2 rounded-full bg-[var(--accent)]"></span>
         ATHERMY.DEV
       </a>
-      <nav class="flex items-center space-x-6 text-sm font-mono text-slate-400">
-        <a href="/game-portfolio/" class="hover:text-slate-100 transition-colors">Home</a>
-        <a href="/game-portfolio/games/" class="hover:text-slate-100 transition-colors">Games</a>
-        <a href="/game-portfolio/projects/" class="hover:text-slate-100 transition-colors">Projects</a>
-        <a href="https://github.com/Athermy" target="_blank" rel="noopener noreferrer" class="hover:text-slate-100 transition-colors">GitHub</a>
+
+      <!-- Desktop nav: full row, hidden below sm -->
+      <nav class="hidden sm:flex items-center gap-6 text-sm font-mono text-[var(--text-muted)]">
+        <a href="/game-portfolio/" class="hover:text-[var(--text-heading)] transition-colors">Home</a>
+        <a href="/game-portfolio/games/" class="hover:text-[var(--text-heading)] transition-colors">Games</a>
+        <a href="/game-portfolio/projects/" class="hover:text-[var(--text-heading)] transition-colors">Projects</a>
+        <a href="https://github.com/Athermy" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--text-heading)] transition-colors">GitHub</a>
+        <button class="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+          <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+          <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke-linecap="round"/></svg>
+        </button>
       </nav>
+
+      <!-- Mobile controls: theme toggle + hamburger, shown below sm only -->
+      <div class="flex sm:hidden items-center gap-2">
+        <button class="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+          <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+          <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke-linecap="round"/></svg>
+        </button>
+        <button id="mobile-menu-btn" class="icon-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
+        </button>
+      </div>
     </header>
+
+    <!-- Mobile dropdown nav: hidden by default, toggled by the hamburger button -->
+    <nav id="mobile-menu" class="hidden sm:hidden flex-col border-b border-[var(--border)] bg-[var(--bg)] text-sm font-mono text-[var(--text-muted)]">
+      <a href="/game-portfolio/" class="px-4 py-3 border-b border-[var(--border)] hover:text-[var(--text-heading)] transition-colors">Home</a>
+      <a href="/game-portfolio/games/" class="px-4 py-3 border-b border-[var(--border)] hover:text-[var(--text-heading)] transition-colors">Games</a>
+      <a href="/game-portfolio/projects/" class="px-4 py-3 border-b border-[var(--border)] hover:text-[var(--text-heading)] transition-colors">Projects</a>
+      <a href="https://github.com/Athermy" target="_blank" rel="noopener noreferrer" class="px-4 py-3 hover:text-[var(--text-heading)] transition-colors">GitHub</a>
+    </nav>
 
     <!-- pb matches the fixed footer's height so content never sits underneath it -->
     <main class="flex flex-col pb-20 sm:pb-16">
       <slot />
     </main>
 
-    <footer class="w-full text-center py-4 text-xs font-mono text-slate-600 border-t border-white/[0.06] fixed bottom-0 left-0 right-0 z-40 bg-[#0f1319]/95 backdrop-blur-md">
-      <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-1 sm:gap-4">
+    <footer class="w-full text-center py-3 sm:py-4 text-[11px] sm:text-xs font-mono text-[var(--text-faint)] border-t border-[var(--border)] fixed bottom-0 left-0 right-0 z-40 bg-[var(--bg)]/95 backdrop-blur-md">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-0.5 sm:gap-4">
         <span>© Athermy — Game Systems & Architecture</span>
-        <span class="text-[11px] text-slate-700">Built with Astro & GitHub Pages</span>
+        <span class="text-[10px] sm:text-[11px] text-[var(--text-faintest)]">Built with Astro & GitHub Pages</span>
       </div>
     </footer>
+
+    <script is:inline>
+      // Theme toggle: there can be two buttons on screen at once (desktop nav
+      // + mobile controls), so bind by class rather than a single id.
+      function setupThemeToggles() {
+        document.querySelectorAll('.theme-toggle').forEach(function (btn) {
+          if (btn.dataset.bound) return;
+          btn.dataset.bound = 'true';
+          btn.addEventListener('click', function () {
+            var current = document.documentElement.getAttribute('data-theme');
+            var next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+          });
+        });
+      }
+
+      function setupMobileMenu() {
+        var btn = document.getElementById('mobile-menu-btn');
+        var menu = document.getElementById('mobile-menu');
+        if (!btn || !menu || btn.dataset.bound) return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', function () {
+          var isOpen = menu.classList.contains('flex');
+          menu.classList.toggle('flex', !isOpen);
+          menu.classList.toggle('hidden', isOpen);
+          btn.setAttribute('aria-expanded', String(!isOpen));
+        });
+      }
+
+      function closeMobileMenu() {
+        var menu = document.getElementById('mobile-menu');
+        var btn = document.getElementById('mobile-menu-btn');
+        if (!menu) return;
+        menu.classList.remove('flex');
+        menu.classList.add('hidden');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+      }
+
+      setupThemeToggles();
+      setupMobileMenu();
+      closeMobileMenu(); // always start closed after a page swap
+      document.addEventListener('astro:after-swap', function () {
+        setupThemeToggles();
+        setupMobileMenu();
+        closeMobileMenu();
+      });
+
+      // The <head> script only runs on a hard page load. Astro's ClientRouter
+      // does soft, in-place page swaps for normal link clicks, which otherwise
+      // silently drop the data-theme attribute back to the default. Re-apply
+      // the stored theme to the INCOMING document before the swap completes,
+      // so it never flashes back to dark for a frame and is never lost.
+      document.addEventListener('astro:before-swap', function (event) {
+        var theme = localStorage.getItem('theme') || 'dark';
+        event.newDocument.documentElement.setAttribute('data-theme', theme);
+      });
+    </script>
   </body>
 </html>

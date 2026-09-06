@@ -27,34 +27,34 @@ const gallery = d.gallery && d.gallery.length > 0 ? d.gallery : [FALLBACK_IMAGE]
 ---
 
 <Layout title={`${d.title} | Athermy Projects`}>
-  <article class="max-w-4xl mx-auto px-6 py-12 sm:py-16 w-full">
-    <a href="/game-portfolio/projects/" class="inline-flex items-center gap-2 text-xs font-mono text-slate-500 hover:text-emerald-400 transition-colors mb-8">
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16 w-full">
+    <a href="/game-portfolio/projects/" class="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-faint)] hover:text-[var(--accent)] transition-colors mb-8">
       &larr; BACK TO PROJECTS
     </a>
 
-    <header class="border-b border-white/[0.08] pb-8 mb-10">
+    <header class="border-b border-[var(--border)] pb-8 mb-10">
       <div class="flex flex-wrap items-center gap-3 mb-4 text-xs font-mono">
-        <span class="px-2.5 py-1 rounded bg-white/[0.04] text-slate-300 border border-white/[0.08]">{d.role}</span>
-        <span class="px-2.5 py-1 rounded bg-white/[0.04] text-slate-400 border border-white/[0.08]">{d.solo ? 'Solo' : 'Team'}</span>
+        <span class="px-2.5 py-1 rounded bg-[var(--surface-2)] text-[var(--text-secondary)] border border-[var(--border)]">{d.role}</span>
+        <span class="px-2.5 py-1 rounded bg-[var(--surface-2)] text-[var(--text-muted)] border border-[var(--border)]">{d.solo ? 'Solo' : 'Team'}</span>
         {isWip && <span class="badge badge-wip">Work in Progress</span>}
       </div>
 
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-100 tracking-tight mb-3">{d.title}</h1>
-      <p class="text-[11px] font-mono text-slate-500 mb-4">
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-[var(--text-heading)] tracking-tight mb-3">{d.title}</h1>
+      <p class="text-[11px] font-mono text-[var(--text-faint)] mb-4">
         {formatDateRange(d.startDate, d.endDate)} · {durationLabel(d.startDate, d.endDate)}
       </p>
-      <p class="text-slate-200 text-base sm:text-lg leading-relaxed font-light">{d.shortDescription}</p>
+      <p class="text-[var(--text-body)] text-base sm:text-lg leading-relaxed font-light">{d.shortDescription}</p>
 
-      <div class="hero-callout p-4 mt-6 text-sm text-slate-200 flex items-start gap-2">
+      <div class="hero-callout p-4 mt-6 text-sm text-[var(--text-body)] flex items-start gap-2">
         <span class="mt-0.5">ℹ️</span>
         <span>
           Built {d.solo ? 'solo' : 'with a team'} using <strong>{d.stack.join(', ')}</strong>.
         </span>
       </div>
 
-      <div class="flex flex-wrap items-center justify-between gap-4 mt-6 pt-6 border-t border-white/[0.06] text-xs font-mono">
+      <div class="flex flex-wrap items-center justify-between gap-4 mt-6 pt-6 border-t border-[var(--border)] text-xs font-mono">
         <div class="flex flex-wrap gap-2">
-          {d.tags.map((tag) => <span class="text-slate-500">#{tag}</span>)}
+          {d.tags.map((tag) => <span class="text-[var(--text-faint)]">#{tag}</span>)}
         </div>
 
         <div class="flex flex-wrap gap-2">
@@ -80,18 +80,18 @@ const gallery = d.gallery && d.gallery.length > 0 ? d.gallery : [FALLBACK_IMAGE]
 
     {gallery.length > 0 && (
       <section class="mb-12">
-        <h3 class="text-xs font-mono text-slate-500 uppercase tracking-widest mb-3">Gallery</h3>
-        <div class="rounded-xl overflow-hidden border border-white/[0.08] bg-slate-950">
+        <h3 class="text-xs font-mono text-[var(--text-faint)] uppercase tracking-widest mb-3">Gallery</h3>
+        <div class="rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--bg-media)]">
           <div class="h-80 sm:h-[450px] w-full relative">
             <img id="active-gallery-img" src={gallery[0]} alt={d.title} class="w-full h-full object-contain" onerror={`this.onerror=null; this.src='${FALLBACK_IMAGE}';`} />
           </div>
           {gallery.length > 1 && (
-            <div class="flex items-center gap-2 p-3 bg-slate-900/60 border-t border-white/[0.06] overflow-x-auto">
+            <div class="flex items-center gap-2 p-3 bg-[var(--bg-elevated)]/60 border-t border-[var(--border)] overflow-x-auto">
               {gallery.map((imgUrl, index) => (
                 <button
                   data-img-src={imgUrl}
                   class={`gallery-thumb-btn w-20 h-14 rounded overflow-hidden border transition-all shrink-0 cursor-pointer ${
-                    index === 0 ? 'border-emerald-400 opacity-100' : 'border-white/10 opacity-50 hover:opacity-80'
+                    index === 0 ? 'border-[var(--accent)] opacity-100' : 'border-[var(--border)] opacity-50 hover:opacity-80'
                   }`}
                 >
                   <img src={imgUrl} alt={`Thumbnail ${index + 1}`} class="w-full h-full object-cover" onerror={`this.onerror=null; this.src='${FALLBACK_IMAGE}';`} />
@@ -104,20 +104,20 @@ const gallery = d.gallery && d.gallery.length > 0 ? d.gallery : [FALLBACK_IMAGE]
     )}
 
     <div class="prose prose-invert max-w-2xl mx-auto
-      prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-100
-      prose-h2:text-2xl prose-h2:border-b prose-h2:border-white/[0.08] prose-h2:pb-3 prose-h2:mt-10
-      prose-h3:text-xl prose-h3:font-bold prose-h3:text-emerald-400 prose-h3:mt-10 prose-h3:mb-3
-      prose-p:text-slate-200 prose-p:leading-relaxed
-      prose-li:text-slate-300 prose-ul:list-disc prose-ol:list-decimal
-      prose-code:text-emerald-300 prose-code:bg-white/[0.06] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
-      prose-hr:border-white/[0.08] prose-hr:my-10 mb-14">
+      prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-[var(--text-heading)] prose-strong:text-[var(--text-heading)] prose-strong:font-semibold prose-a:text-[var(--accent)] prose-a:no-underline hover:prose-a:underline
+      prose-h2:text-2xl prose-h2:border-b prose-h2:border-[var(--border)] prose-h2:pb-3 prose-h2:mt-10
+      prose-h3:text-xl prose-h3:font-bold prose-h3:text-[var(--accent)] prose-h3:mt-10 prose-h3:mb-3
+      prose-p:text-[var(--text-body)] prose-p:leading-relaxed
+      prose-li:text-[var(--text-secondary)] prose-ul:list-disc prose-ol:list-decimal
+      prose-code:text-[var(--accent-strong)] prose-code:bg-[var(--surface-3)] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
+      prose-hr:border-[var(--border)] prose-hr:my-10 mb-14">
       <Content />
     </div>
 
     <!-- Devlog -->
     {devlogs.length > 0 && (
       <section>
-        <h2 class="text-xl font-bold text-slate-100 tracking-tight mb-6 pb-3 border-b border-white/[0.08]">
+        <h2 class="text-xl font-bold text-[var(--text-heading)] tracking-tight mb-6 pb-3 border-b border-[var(--border)]">
           Development Blog
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -127,22 +127,22 @@ const gallery = d.gallery && d.gallery.length > 0 ? d.gallery : [FALLBACK_IMAGE]
               class="project-card rounded-xl overflow-hidden flex flex-col group"
             >
               {log.data.coverImage && (
-                <div class="h-32 w-full bg-slate-950 overflow-hidden border-b border-white/[0.06]">
+                <div class="h-32 w-full bg-[var(--bg-media)] overflow-hidden border-b border-[var(--border)]">
                   <img src={log.data.coverImage} alt={log.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 </div>
               )}
               <div class="p-4 flex flex-col gap-2">
                 <div class="flex items-center gap-2">
                   <span class="badge">#{log.data.number}</span>
-                  <h3 class="text-sm font-semibold text-slate-100 group-hover:text-emerald-400 transition-colors">{log.data.title}</h3>
+                  <h3 class="text-sm font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent)] transition-colors">{log.data.title}</h3>
                 </div>
-                <p class="text-xs text-slate-400 font-light line-clamp-2 leading-relaxed">{log.data.excerpt}</p>
+                <p class="text-xs text-[var(--text-muted)] font-light line-clamp-2 leading-relaxed">{log.data.excerpt}</p>
                 {log.data.tags.length > 0 && (
                   <div class="flex flex-wrap gap-1.5">
                     {log.data.tags.map((tag) => <span class="badge">{tag}</span>)}
                   </div>
                 )}
-                <p class="text-[10px] font-mono text-slate-600 mt-1">Published {log.data.date}</p>
+                <p class="text-[10px] font-mono text-[var(--text-faintest)] mt-1">Published {log.data.date}</p>
               </div>
             </a>
           ))}
@@ -163,11 +163,11 @@ const gallery = d.gallery && d.gallery.length > 0 ? d.gallery : [FALLBACK_IMAGE]
         if (src) {
           activeImg.src = src;
           thumbBtns.forEach((b) => {
-            b.classList.remove('border-emerald-400', 'opacity-100');
-            b.classList.add('border-white/10', 'opacity-50');
+            b.classList.remove('border-[var(--accent)]', 'opacity-100');
+            b.classList.add('border-[var(--border)]', 'opacity-50');
           });
-          btn.classList.add('border-emerald-400', 'opacity-100');
-          btn.classList.remove('border-white/10', 'opacity-50');
+          btn.classList.add('border-[var(--accent)]', 'opacity-100');
+          btn.classList.remove('border-[var(--border)]', 'opacity-50');
         }
       });
     });
